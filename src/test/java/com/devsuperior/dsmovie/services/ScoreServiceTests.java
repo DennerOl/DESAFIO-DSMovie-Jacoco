@@ -64,7 +64,7 @@ public class ScoreServiceTests {
 		movieDTO = MovieFactory.createMovieDTO();
 
 		Mockito.when(movieRepository.findById(existingMovieId)).thenReturn(Optional.of(movie));
-		Mockito.when(movieRepository.findById(nonExistingMovieId)).thenReturn(Optional.empty());
+		Mockito.when(movieRepository.findById(nonExistingMovieId)).thenThrow(ResourceNotFoundException.class);
 
 		Mockito.when(scoreRepository.saveAndFlush(any())).thenReturn(score);
 		Mockito.when(movieRepository.save(any())).thenReturn(movie);

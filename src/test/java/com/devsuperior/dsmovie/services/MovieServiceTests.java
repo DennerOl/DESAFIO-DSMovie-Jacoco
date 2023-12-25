@@ -26,6 +26,8 @@ import com.devsuperior.dsmovie.services.exceptions.DatabaseException;
 import com.devsuperior.dsmovie.services.exceptions.ResourceNotFoundException;
 import com.devsuperior.dsmovie.tests.MovieFactory;
 
+import jakarta.persistence.EntityNotFoundException;
+
 @ExtendWith(SpringExtension.class)
 public class MovieServiceTests {
 
@@ -57,15 +59,15 @@ public class MovieServiceTests {
 		Mockito.when(repository.searchByTitle(any(), (Pageable) any())).thenReturn(page);
 
 		Mockito.when(repository.findById(existingMovieId)).thenReturn(Optional.of(movieEntity));
-		Mockito.when(repository.findById(nonExistingMovieId)).thenReturn(Optional.empty());
+		Mockito.when(repository.findById(nonExistingMovieId)).thenThrow(ResourceNotFoundException.class);
 
 		Mockito.when(repository.save(any())).thenReturn(movieEntity);
 		
 		Mockito.when(repository.getReferenceById(existingMovieId)).thenReturn(movieEntity);
-		Mockito.when(repository.getReferenceById(nonExistingMovieId)).thenThrow(ResourceNotFoundException.class);
+		Mockito.when(repository.getReferenceById(nonExistingMovieId)).thenThrow(EntityNotFoundException.class);
 		
 		Mockito.when(repository.existsById(existingMovieId)).thenReturn(true);
-		Mockito.when(repository.existsById(nonExistingMovieId)).thenReturn(false);
+		Mockito.when(repository.existsById(nonExistingMovieId)).thenThrow(ResourceNotFoundException.class);
 		
 		Mockito.when(repository.existsById(dependentMovieId)).thenReturn(true);
 		Mockito.doThrow(DataIntegrityViolationException.class).when(repository).deleteById(dependentMovieId);
